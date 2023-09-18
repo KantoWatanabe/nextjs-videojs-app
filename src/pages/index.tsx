@@ -5,8 +5,7 @@ import Player from 'video.js/dist/types/player';
 
 export default function Home() {
   const playerRef = React.useRef<Player | null>(null);
-
-  const videoJsOptions: VideoJsOptions = {
+  let options: VideoJsOptions = {
     autoplay: true,
     controls: true,
     responsive: true,
@@ -16,6 +15,8 @@ export default function Home() {
       type: 'video/mp4'
     }]
   };
+  // useStateしないと子コンポーネントのVideoJSへVideoJsOptionsの変更が検知されない
+  const [videoJsOptions, setVideoJsOptions] = React.useState<VideoJsOptions>(options);
 
   const handlePlayerReady = (player: Player) => {
     playerRef.current = player;
@@ -28,6 +29,23 @@ export default function Home() {
     player.on('dispose', () => {
       console.log('player will dispose');
     });
+  };
+
+  const handleClick = () => {
+    // optionsの中身を書き換えてsetVideoJsOptionsしただけでは子コンポーネントのVideoJSへVideoJsOptionsの変更が検知されない
+    //options.sources[0].src = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
+    //options.sources[0].type = "application/x-mpegURL";
+    options = {
+      autoplay: true,
+      controls: true,
+      responsive: true,
+      fluid: true,
+      sources: [{
+        src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+        type: 'application/x-mpegURL'
+      }]
+    };
+    setVideoJsOptions(options);
   };
 
   return (
@@ -51,6 +69,10 @@ export default function Home() {
             >
               React and Video.js
             </a>
+          </div>
+          <div>
+            <button onClick={handleClick}>hls mode</button>
+            <span>{videoJsOptions.sources[0].src}</span>
           </div>
         </div>
         <div>
