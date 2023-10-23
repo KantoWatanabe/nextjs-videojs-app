@@ -2,6 +2,7 @@ import React from 'react';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 import Player from 'video.js/dist/types/player';
+import '@/videojs/plugins/examplePlugin'
 
 export type VideoJsOptions = {
   autoplay: boolean;
@@ -38,6 +39,8 @@ export const VideoJS = (props: VideoJsProps) => {
         videojs.log('player is ready');
         onReady && onReady(player);
       });
+      //@ts-ignore
+      player.examplePlugin();
 
     // You could update an existing player in the `else` block here
     // on prop change, for example:
